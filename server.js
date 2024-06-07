@@ -8,7 +8,7 @@ async function init() {
         res.json({ message: "Leetcode API" })
     });
 
-    require("./app/routes/test.routes")(app);
+    require("./app/routes/leetcode.routes")(app);
     const port = process.env.PORT;
  
     app.listen(process.env.PORT, () => {
