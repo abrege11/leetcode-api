@@ -8,7 +8,9 @@ module.exports = (app) => {
     // routes
     router.get("/user/:userId", leetcode.getDataByUsername);
 
-    router.get("/questionOfDay", leetcode.getQuestionOfDay)
+    router.get("/questionOfDay", leetcode.getQuestionOfDay);
+
+    router.get("/user/:userId/publicInfo", leetcode.getPublicUserInfo);
 
     app.use("/api/leetcode", router);
 };
