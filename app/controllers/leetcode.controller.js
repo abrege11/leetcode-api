@@ -1,84 +1,69 @@
-const { formatData, allData} = require("../middlewares/leetcode.middleware.js");
-//const { query } = require("../../models/leetcode.model.js");
+const { getSolved, getAccountInfo, allData } = require("../middlewares/leetcode.middleware.js");
+const { mainUserQuery, questionOfDayQuery } = require("../../models/leetcode.model.js");
 
-const query = `
-  query getUserProfile($username: String!) {
-    allQuestionsCount {
-      difficulty
-      count
-    }
-    matchedUser(username: $username) {
-      contributions {
-        points
-      }
-      profile {
-        reputation
-        ranking
-      }
-      submissionCalendar
-      submitStats {
-        acSubmissionNum {
-          difficulty
-          count
-          submissions
-        }
-        totalSubmissionNum {
-          difficulty
-          count
-          submissions
-        }
-      }
-    }
-    recentSubmissionList(username: $username) {
-      title
-      titleSlug
-      timestamp
-      statusDisplay
-      lang
-      __typename
-    }
-    matchedUserStats: matchedUser(username: $username) {
-      submitStats: submitStatsGlobal {
-        acSubmissionNum {
-          difficulty
-          count
-          submissions
-          __typename
-        }
-        totalSubmissionNum {
-          difficulty
-          count
-          submissions
-          __typename
-        }
-        __typename
-      }
-    }
-  }
-`;
-
-
+// retrieve all recent leetcode data by username 
 exports.getDataByUsername = async (req, res) => {
-    const user = req.params.userId;
-    fetch('https://leetcode.com/graphql', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Referer': 'https://leetcode.com'
-        }, 
-        body: JSON.stringify({query: query, variables: { username: user }}),
-    
-    })
-    .then(result => result.json())
-    .then(data => {
-      if(data.errors){
-        res.send(data);
-      } else {
-        res.send(allData(data.data));
+  const user = req.params.userId;
+  const dataByUserName = mainUserQuery();
+  // establish connection and parse body given username
+  fetch('https://leetcode.com/graphql/', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Referer': 'https://leetcode.com'
+    },
+    body: JSON.stringify({ query: dataByUserName, variables: { username: user } }),
+  })
+    .then(result => {
+      if (!result.ok) {
+        throw new Error(`Network response was not ok: ${result.statusText}`);
       }
+      return result.json();
     })
-    .catch(err=>{
-        console.error('Error', err);
-        res.send(err);
+    .then(data => {
+      // send errors if they exist
+      if (data.errors) {
+        return res.status(400).send(data);
+      }
+      // send desired response
+      res.status(200).send(data.data);
+    })
+    // error catch
+    .catch(err => {
+      console.error('Error:', err);
+      res.status(500).send({ error: 'Internal Server Error', details: err.message });
+    });
+}
+
+
+exports.getQuestionOfDay = async (req, res) => {
+  const insertQuery = questionOfDayQuery();
+
+  fetch('https://leetcode.com/graphql/', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Referer': 'https://leetcode.com'
+    },
+    body: JSON.stringify({ query: insertQuery, variables: {} }),
+  })
+    .then(result => {
+      if (!result.ok) {
+        throw new Error(`Network response was not ok: ${result.statusText}`);
+      }
+      return result.json();
+    })
+    .then(data => {
+      // send errors if they exist
+      if (data.errors) {
+        return res.status(400).send(data);
+      }
+      // send desired response
+      res.status(200).send(data.data);
+    })
+    // error catch
+    .catch(err => {
+      console.error('Error:', err);
+      res.status(500).send({ error: 'Internal Server Error', details: err.message });
     });
 }

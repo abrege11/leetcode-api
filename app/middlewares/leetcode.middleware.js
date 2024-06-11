@@ -1,25 +1,31 @@
 
-exports.formatData = (data) => {
-    const userProfile = data.matchedUser;
+
+exports.getSolved = (data) => { 
     return {
-      totalSolved: userProfile.submitStats.acSubmissionNum.find(stats => stats.difficulty === 'All').count,
-      totalSubmissions: userProfile.submitStats.totalSubmissionNum,
-      totalQuestions: data.allQuestionsCount.find(question => question.difficulty === 'All').count,
-      easySolved: userProfile.submitStats.acSubmissionNum.find(stats => stats.difficulty === 'Easy').count,
+      solved: data.matchedUser.submitStats.acSubmissionNum.find(stats => stats.difficulty === 'All').count,
+      submissions: data.matchedUser.submitStats.totalSubmissionNum,
+      questions: data.allQuestionsCount.find(question => question.difficulty === 'All').count,
+      solvedEasy: data.matchedUser.submitStats.acSubmissionNum.find(stats => stats.difficulty === 'Easy').count,
       totalEasy: data.allQuestionsCount.find(question => question.difficulty === 'Easy').count,
-      mediumSolved: userProfile.submitStats.acSubmissionNum.find(stats => stats.difficulty === 'Medium').count,
+      solvedMedium: data.matchedUser.submitStats.acSubmissionNum.find(stats => stats.difficulty === 'Medium').count,
       totalMedium: data.allQuestionsCount.find(question => question.difficulty === 'Medium').count,
-      hardSolved: userProfile.submitStats.acSubmissionNum.find(stats => stats.difficulty === 'Hard').count,
+      solvedHard: data.matchedUser.submitStats.acSubmissionNum.find(stats => stats.difficulty === 'Hard').count,
       totalHard: data.allQuestionsCount.find(question => question.difficulty === 'Hard').count,
-      ranking: userProfile.profile.ranking,
-      contributionPoint: userProfile.contributions.points,
-      reputation: userProfile.profile.reputation,
-      submissionCalendar: JSON.parse(userProfile.submissionCalendar),
-      recentSubmissions: data.recentSubmissionList,
-      matchedUserStats: userProfile.submitStats
     };
 }
 
+
+exports.getAccountInfo = (data) => {
+    return {
+        ranking: data.matchedUser.profile.ranking,
+        reputation: data.matchedUser.profile.reputation,
+        submissionCalendar: data.matchedUser.submissionCalendar,
+        recentSubmissions: data.recentSubmissionList,
+        matchedUserStats: data.matchedUser.submitStats
+    };
+}
+
+// return raw output
 exports.allData = (data) => {
     return data;
 }

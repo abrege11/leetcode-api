@@ -1,15 +1,12 @@
+exports.mainUserQuery = (user) => {
 
-exports.query = (user) => {
-  const query = `
-  query getUserProfile($username: "{user}") {
+const query = `
+  query getUserProfile($username: String!) {
     allQuestionsCount {
       difficulty
       count
     }
-    matchedUser("{user}") {
-      contributions {
-        points
-      }
+    matchedUser(username: $username) {
       profile {
         reputation
         ranking
@@ -28,7 +25,7 @@ exports.query = (user) => {
         }
       }
     }
-    recentSubmissionList("{user}") {
+    recentSubmissionList(username: $username) {
       title
       titleSlug
       timestamp
@@ -36,7 +33,7 @@ exports.query = (user) => {
       lang
       __typename
     }
-    matchedUserStats: matchedUser("{user}") {
+    matchedUserStats: matchedUser(username: $username) {
       submitStats: submitStatsGlobal {
         acSubmissionNum {
           difficulty
@@ -55,4 +52,36 @@ exports.query = (user) => {
     }
   }
 `;
+return query;
+}
+
+exports.questionOfDayQuery = () => {
+    const query = `
+    query questionOfToday {
+        activeDailyCodingChallengeQuestion {
+          date
+          userStatus
+          link
+          question {
+            acRate
+            difficulty
+            freqBar
+            frontendQuestionId: questionFrontendId
+            isFavor
+            paidOnly: isPaidOnly
+            status
+            title
+            titleSlug
+            hasVideoSolution
+            hasSolution
+            topicTags {
+              name
+              id
+              slug
+            }
+          }
+        }
+      }
+    `
+    return query;
 }
