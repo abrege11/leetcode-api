@@ -1,61 +1,30 @@
-exports.mainUserQuery = (user) => {
+exports.profileDataQuery = (username, year) => {
+  const query = `
+    query userProfileData($username: String!, $year: Int) {
+      userStatus {
+        checkedInToday
+      }
+      matchedUser(username: $username) {
+        userCalendar(year: $year) {
+          activeYears
+          streak
+          totalActiveDays
+          dccBadges {
+            timestamp
+            badge {
+              name
+              icon
+            }
+          }
+          submissionCalendar
+        }
+      }
+    }
+  `;
+  return query;
+};
 
-const query = `
-  query getUserProfile($username: String!) {
-    allQuestionsCount {
-      difficulty
-      count
-    }
-    matchedUser(username: $username) {
-      profile {
-        reputation
-        ranking
-      }
-      submissionCalendar
-      submitStats {
-        acSubmissionNum {
-          difficulty
-          count
-          submissions
-        }
-        totalSubmissionNum {
-          difficulty
-          count
-          submissions
-        }
-      }
-    }
-    recentSubmissionList(username: $username) {
-      title
-      titleSlug
-      timestamp
-      statusDisplay
-      lang
-      __typename
-    }
-    matchedUserStats: matchedUser(username: $username) {
-      submitStats: submitStatsGlobal {
-        acSubmissionNum {
-          difficulty
-          count
-          submissions
-          __typename
-        }
-        totalSubmissionNum {
-          difficulty
-          count
-          submissions
-          __typename
-        }
-        __typename
-      }
-    }
-  }
-`;
-return query;
-}
-
-exports.questionOfDayQuery = () => {
+exports.envInfoQuery = () => {
     const query = `
     query questionOfToday {
         activeDailyCodingChallengeQuestion {
@@ -81,13 +50,17 @@ exports.questionOfDayQuery = () => {
             }
           }
         }
+        allQuestionsCount {
+            difficulty
+            count
+          }
       }
     `
     return query;
 }
 
-exports.publicUserProfileQuery = () => {
-const query = `    
+exports.submissionDataQuery = () => {
+const query = `
 query userPublicProfile($username: String!) {
         matchedUser(username: $username) {
           contestBadge {
@@ -95,6 +68,18 @@ query userPublicProfile($username: String!) {
             expired
             hoverText
             icon
+           }
+           submitStats {
+             acSubmissionNum {
+               difficulty
+               count
+               submissions
+             }
+             totalSubmissionNum {
+               difficulty
+               count
+               submissions
+             }
            }
           username
           githubUrl
@@ -119,9 +104,48 @@ query userPublicProfile($username: String!) {
             solutionCountDiff
             categoryDiscussCount
             categoryDiscussCountDiff
-          }
+          }  
         }
+        recentSubmissionList(username: $username) {
+            title
+            titleSlug
+            timestamp
+            statusDisplay
+            lang
+            __typename
+          }
+          matchedUserStats: matchedUser(username: $username) {
+            submitStats: submitStatsGlobal {
+              acSubmissionNum {
+                difficulty
+                count
+                submissions
+                __typename
+              }
+              totalSubmissionNum {
+                difficulty
+                count
+                submissions
+                __typename
+              }
+              __typename
+            }
+          }
       }
       `
+    return query;
+}
+
+exports.userLanguageStats = () => {
+    const query = `
+    query languageStats($username: String!) {
+          matchedUser(username: $username) {
+                languageProblemCount {
+                          languageName
+                                problemsSolved
+                                }
+                              }
+                            }
+    `
     return query;
 }
