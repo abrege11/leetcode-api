@@ -1,4 +1,3 @@
-const { getSolved, getAccountInfo, allData } = require("../middlewares/leetcode.middleware.js");
 const { submissionDataQuery, envInfoQuery, profileDataQuery, userLanguageStats, userSolutionsQuery } = require("../../models/leetcode.model.js");
 
 // retrieve all recent leetcode data by username 
