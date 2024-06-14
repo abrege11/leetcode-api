@@ -12,7 +12,10 @@ module.exports = (app) => {
 
     router.get("/user/:userId/languageStats", leetcode.getLanguageStats);
 
+    router.get("/user/:userId/solutions/:orderBy/:skip/:first", leetcode.getUserSolutions);
+
     router.get("/envInfo", leetcode.envInfo);
+
 
     app.use("/api/leetcode", router);
 };

@@ -149,3 +149,31 @@ exports.userLanguageStats = () => {
     `
     return query;
 }
+
+exports.userSolutionsQuery = (username, orderBy, skip, first) => {
+  const query = `
+  query userSolutionTopics($username: String!, $orderBy: TopicSortingOption, $skip: Int, $first: Int) {
+    userSolutionTopics(
+      username: $username
+      orderBy: $orderBy
+      skip: $skip
+      first: $first
+    ) {
+      edges {
+        node {
+          id
+          title
+          url
+          viewCount
+          questionTitle
+          post {
+            creationDate
+            voteCount
+          }
+        }
+      }
+    }
+  }
+  `
+  return query;
+}
